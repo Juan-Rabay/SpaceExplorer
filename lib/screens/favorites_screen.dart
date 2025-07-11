@@ -4,29 +4,26 @@ import '../models/apod.dart';
 import '../widgets/apod_card.dart';
 
 class FavoritesScreen extends StatefulWidget {
-  const FavoritesScreen({super.key});
+  const FavoritesScreen({Key? key}) : super(key: key);
 
   @override
-  _FavoritesScreenState createState() => _FavoritesScreenState();
+  State<FavoritesScreen> createState() => FavoritesScreenState();
 }
 
-class _FavoritesScreenState extends State<FavoritesScreen> {
-  final _service = FavoritesService();
+class FavoritesScreenState extends State<FavoritesScreen> {
+  final FavoritesService _service = FavoritesService();
   List<Apod> _favs = [];
   bool _loading = true;
 
   @override
   void initState() {
     super.initState();
-    _load();
+    _loadFavorites();
   }
 
-  void _load() async {
-    final favs = await _service.getFavoriteApods();
-    setState(() {
-      _favs = favs;
-      _loading = false;
-    });
+  Future<void> _loadFavorites() async {
+    _favs = await _service.getFavoriteApods();
+    setState(() => _loading = false);
   }
 
   @override
@@ -37,13 +34,16 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
           ? const Center(child: CircularProgressIndicator())
           : _favs.isEmpty
               ? const Center(child: Text('No tienes favoritos'))
-              : ListView(
-                  children: _favs
-                      .map((apod) => Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: ApodCard(apod: apod),
-                          ))
-                      .toList(),
+              : ListView.builder(
+                  padding: const EdgeInsets.all(8),
+                  itemCount: _favs.length,
+                  itemBuilder: (_, i) {
+                    final apod = _favs[i];
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4.0),
+                      child: ApodCard(apod: apod),
+                    );
+                  },
                 ),
     );
   }

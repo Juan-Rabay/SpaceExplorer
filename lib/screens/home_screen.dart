@@ -6,7 +6,7 @@ import 'search_media_screen.dart';
 import 'favorites_screen.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -16,59 +16,60 @@ class HomeScreen extends StatelessWidget {
         centerTitle: true,
       ),
       body: ListView(
-        children: [
-          ListTile(
-            title: const Text('Imagen del Día (APOD)'),
-            subtitle: const Text('Explora la imagen astronómica del día'),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const ApodScreen()),
-              );
-            },
+        children: const [
+          _HomeOption(
+            title: 'Imagen del Día (APOD)',
+            subtitle: 'Explora la imagen astronómica del día',
+            page: ApodScreen(),
           ),
-          ListTile(
-            title: const Text('Fotos del Rover'),
-            subtitle: const Text('Imágenes reales tomadas en Marte'),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const RoverPhotosScreen()),
-              );
-            },
+          _HomeOption(
+            title: 'Fotos del Rover',
+            subtitle: 'Imágenes reales tomadas en Marte',
+            page: RoverPhotosScreen(),
           ),
-          ListTile(
-            title: const Text('Eventos Naturales'),
-            subtitle: const Text('Incendios, tormentas, volcanes y otros'),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const EventListScreen()),
-              );
-            },
+          _HomeOption(
+            title: 'Eventos Naturales',
+            subtitle: 'Incendios, tormentas, volcanes y otros',
+            page: EventListScreen(),
           ),
-          ListTile(
-            title: const Text('Buscar Imágenes'),
-            subtitle: const Text('Explora la biblioteca multimedia de la NASA'),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const SearchMediaScreen()),
-              );
-            },
+          _HomeOption(
+            title: 'Buscar Imágenes',
+            subtitle: 'Explora la biblioteca multimedia de la NASA',
+            page: SearchMediaScreen(),
           ),
-          ListTile(
-            title: const Text('Favoritos'),
-            subtitle: const Text('Tus APODs'),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const FavoritesScreen()),
-              );
-            },
+          _HomeOption(
+            title: 'Favoritos',
+            subtitle: 'Tus APODs guardados',
+            page: FavoritesScreen(),
           ),
         ],
       ),
+    );
+  }
+}
+
+class _HomeOption extends StatelessWidget {
+  final String title;
+  final String subtitle;
+  final Widget page;
+
+  const _HomeOption({
+    required this.title,
+    required this.subtitle,
+    required this.page,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      title: Text(title),
+      subtitle: Text(subtitle),
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => page),
+        );
+      },
     );
   }
 }
