@@ -6,6 +6,7 @@ import '../core/constants.dart';
 import '../core/api_client.dart';
 import '../core/connectivity_service.dart';
 import '../core/favorites_service.dart';
+import '../widgets/app_drawer.dart';
 
 class ApodScreen extends StatefulWidget {
   const ApodScreen({super.key});
@@ -74,6 +75,7 @@ class _ApodScreenState extends State<ApodScreen> {
           if (_apod != null) FavoriteButton(apod: _apod!),
         ],
       ),
+      drawer: const AppDrawer(),
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : _error != null

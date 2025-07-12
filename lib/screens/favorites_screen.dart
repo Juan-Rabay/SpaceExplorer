@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../core/favorites_service.dart';
 import '../models/apod.dart';
 import '../widgets/apod_card.dart';
+import '../widgets/app_drawer.dart';
 
 class FavoritesScreen extends StatefulWidget {
   const FavoritesScreen({Key? key}) : super(key: key);
@@ -30,6 +31,7 @@ class FavoritesScreenState extends State<FavoritesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Favoritos')),
+      drawer: const AppDrawer(),
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : _favs.isEmpty

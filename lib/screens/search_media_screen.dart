@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../core/media_service.dart';
 import '../models/media_item.dart';
 import '../core/connectivity_service.dart';
+import '../widgets/app_drawer.dart';
 
 class SearchMediaScreen extends StatefulWidget {
   const SearchMediaScreen({Key? key}) : super(key: key);
@@ -54,6 +55,7 @@ class SearchMediaScreenState extends State<SearchMediaScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Buscar Imágenes NASA')),
+      drawer: const AppDrawer(),
       body: Padding(
         padding: const EdgeInsets.all(12.0),
         child: Column(

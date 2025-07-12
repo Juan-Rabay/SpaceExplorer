@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
-import 'apod_screen.dart';
-import 'rover_photos_screen.dart';
-import 'event_list_screen.dart';
-import 'search_media_screen.dart';
-import 'favorites_screen.dart';
+import '../widgets/app_drawer.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -11,65 +7,43 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: const AppDrawer(),
       appBar: AppBar(
         title: const Text('SpaceExplorer'),
         centerTitle: true,
       ),
-      body: ListView(
-        children: const [
-          _HomeOption(
-            title: 'Imagen del Día (APOD)',
-            subtitle: 'Explora la imagen astronómica del día',
-            page: ApodScreen(),
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.public, size: 80, color: Color(0xFF66FCF1)),
+              const SizedBox(height: 20),
+              const Text(
+                '¡Bienvenido a SpaceExplorer!',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+              const SizedBox(height: 10),
+              const Text(
+                'Explora el cosmos con herramientas asombrosas:\n\n• Imagen astronómica del día\n• Fotos del Rover en Marte\n• Eventos naturales en la Tierra\n• Biblioteca multimedia de la NASA\n• Tus imágenes favoritas guardadas',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 16, color: Colors.white70),
+              ),
+              const SizedBox(height: 30),
+              ElevatedButton.icon(
+                onPressed: () => Scaffold.of(context).openDrawer(),
+                icon: const Icon(Icons.menu),
+                label: const Text('Explorar Menú'),
+              ),
+            ],
           ),
-          _HomeOption(
-            title: 'Fotos del Rover',
-            subtitle: 'Imágenes reales tomadas en Marte',
-            page: RoverPhotosScreen(),
-          ),
-          _HomeOption(
-            title: 'Eventos Naturales',
-            subtitle: 'Incendios, tormentas, volcanes y otros',
-            page: EventListScreen(),
-          ),
-          _HomeOption(
-            title: 'Buscar Imágenes',
-            subtitle: 'Explora la biblioteca multimedia de la NASA',
-            page: SearchMediaScreen(),
-          ),
-          _HomeOption(
-            title: 'Favoritos',
-            subtitle: 'Tus APODs guardados',
-            page: FavoritesScreen(),
-          ),
-        ],
+        ),
       ),
-    );
-  }
-}
-
-class _HomeOption extends StatelessWidget {
-  final String title;
-  final String subtitle;
-  final Widget page;
-
-  const _HomeOption({
-    required this.title,
-    required this.subtitle,
-    required this.page,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(title),
-      subtitle: Text(subtitle),
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (_) => page),
-        );
-      },
     );
   }
 }
