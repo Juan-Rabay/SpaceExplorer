@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:share_plus/share_plus.dart';
+
 import '../models/apod.dart';
 import '../widgets/apod_card.dart';
 import '../widgets/favorite_button.dart';
@@ -35,9 +37,9 @@ class _ApodScreenState extends State<ApodScreen> {
       _loading = true;
       _error = null;
     });
+
     final online = await _conn.isOnline;
     if (!online) {
-      //Cargar primero el fav si existe 
       final favs = await _favService.getFavoriteApods();
       setState(() {
         _offline = true;
@@ -69,13 +71,24 @@ class _ApodScreenState extends State<ApodScreen> {
   Widget build(BuildContext context) {
     final title = _offline ? 'Imagen del Día (Sin conexión)' : 'Imagen del Día';
     return Scaffold(
+      drawer: const AppDrawer(),
       appBar: AppBar(
         title: Text(title),
         actions: [
-          if (_apod != null) FavoriteButton(apod: _apod!),
+          if (_apod != null) ...[
+            IconButton(
+              icon: const Icon(Icons.share),
+              onPressed: () {
+                Share.share(
+                  '${_apod!.title}\n${_apod!.url}',
+                  subject: 'Imagen astronómica del día',
+                );
+              },
+            ),
+            FavoriteButton(apod: _apod!),
+          ],
         ],
       ),
-      drawer: const AppDrawer(),
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : _error != null

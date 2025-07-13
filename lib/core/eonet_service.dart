@@ -6,24 +6,22 @@ class EonetService {
   final _client = ApiClient();
 
   Future<List<NaturalEvent>> fetchEvents({
-    String type = 'all',
-    DateTime? startDate,
-    DateTime? endDate,
+    String status = 'open',
+    String? category,
+    int days = 20,
+    int limit = 50,
   }) async {
-    final start = startDate?.toUtc().toIso8601String().split('T').first;
-    final end = endDate?.toUtc().toIso8601String().split('T').first;
-
     final queryParams = {
-      'type': type,
-      if (start != null) 'startDate': start,
-      if (end != null) 'endDate': end,
-      'api_key': nasaApiKey
+      'status': status,
+      'days': days.toString(),
+      'limit': limit.toString(),
+      if (category != null) 'category': category,
     };
 
-    final uri = Uri.https('api.nasa.gov', '/DONKI/notifications', queryParams);
+    final uri = Uri.https('eonet.gsfc.nasa.gov', '/api/v2.1/events', queryParams);
     final data = await _client.getJson(uri.toString());
 
-    final list = data as List<dynamic>;
+    final list = data['events'] as List<dynamic>;
     return list.map((e) => NaturalEvent.fromJson(e)).toList();
   }
 }

@@ -5,6 +5,8 @@ import '../screens/rover_photos_screen.dart';
 import '../screens/event_list_screen.dart';
 import '../screens/search_media_screen.dart';
 import '../screens/favorites_screen.dart';
+import '../screens/settings_screen.dart';
+import '../screens/about_screen.dart';
 
 class AppDrawer extends StatelessWidget {
   const AppDrawer({super.key});
@@ -61,6 +63,16 @@ class AppDrawer extends StatelessWidget {
             leading: const Icon(Icons.star),
             title: const Text('Favoritos'),
             onTap: () => _navigateTo(context, const FavoritesScreen()),
+          ),
+          ListTile(
+            leading: const Icon(Icons.settings),
+            title: const Text('Preferencias'),
+            onTap: () => _navigateTo(context, const SettingsScreen()),
+          ),
+          ListTile(
+            leading: const Icon(Icons.info_outline),
+            title: const Text('Acerca de'),
+            onTap: () => _navigateTo(context, const AboutScreen()),
           ),
         ],
       ),
