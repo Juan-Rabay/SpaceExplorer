@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import '../core/eonet_service.dart';
 import '../models/natural_event.dart';
-import 'event_detail_screen.dart';
 import '../widgets/app_drawer.dart';
 
 class EventListScreen extends StatefulWidget {
@@ -15,19 +16,139 @@ class _EventListScreenState extends State<EventListScreen> {
   late Future<List<NaturalEvent>> futureEvents;
   bool _loading = true;
 
+  String _status = 'open';
+  String? _selectedCategory;
+  int _days = 20;
+
+  final List<String?> _categories = [
+    null,
+    'wildfires',
+    'volcanoes',
+    'severeStorms',
+    'earthquakes',
+    'floods',
+  ];
+
   @override
   void initState() {
     super.initState();
-    _fetch();
+    _loadPreferences().then((_) => _fetch());
+  }
+
+  Future<void> _loadPreferences() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _status = prefs.getString('event_status') ?? 'open';
+      _selectedCategory = prefs.getString('event_category');
+      _days = prefs.getInt('event_days') ?? 20;
+    });
+  }
+
+  Future<void> _savePreferences() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('event_status', _status);
+    if (_selectedCategory != null) {
+      await prefs.setString('event_category', _selectedCategory!);
+    } else {
+      await prefs.remove('event_category');
+    }
+    await prefs.setInt('event_days', _days);
   }
 
   void _fetch() {
-    setState(() {
-      _loading = true;
-    });
+    setState(() => _loading = true);
     futureEvents = EonetService()
-        .fetchEvents()
+        .fetchEvents(status: _status, category: _selectedCategory, days: _days)
         .whenComplete(() => setState(() => _loading = false));
+  }
+
+  void _showFilterSheet() {
+    String tempStatus = _status;
+    String? tempCategory = _selectedCategory;
+    int tempDays = _days;
+
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setModalState) => Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text('Filtrar eventos', style: TextStyle(fontWeight: FontWeight.bold)),
+                const SizedBox(height: 12),
+                DropdownButton<String>(
+                  value: tempStatus,
+                  items: ['open', 'closed']
+                      .map((s) => DropdownMenuItem(value: s, child: Text(s)))
+                      .toList(),
+                  onChanged: (val) => setModalState(() => tempStatus = val!),
+                ),
+                const SizedBox(height: 10),
+                DropdownButton<String?>(
+                  value: tempCategory,
+                  items: _categories
+                      .map((c) => DropdownMenuItem(
+                            value: c,
+                            child: Text(c == null ? 'Todas las categorías' : c.toUpperCase()),
+                          ))
+                      .toList(),
+                  onChanged: (val) => setModalState(() => tempCategory = val),
+                ),
+                const SizedBox(height: 10),
+                Text('Días: $tempDays'),
+                Slider(
+                  value: tempDays.toDouble(),
+                  min: 1,
+                  max: 30,
+                  divisions: 29,
+                  label: '$tempDays días',
+                  onChanged: (val) => setModalState(() => tempDays = val.toInt()),
+                ),
+                const SizedBox(height: 12),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    setState(() {
+                      _status = tempStatus;
+                      _selectedCategory = tempCategory;
+                      _days = tempDays;
+                    });
+                    _savePreferences();
+                    _fetch();
+                  },
+                  child: const Text('Aplicar filtros'),
+                )
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _goToDetails(NaturalEvent event) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(event.title),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Categoría: ${event.category}'),
+            const SizedBox(height: 8),
+            Text('Fecha: ${event.date.split("T")[0]}'),
+            const SizedBox(height: 8),
+            Text(event.description ?? 'Sin descripción'),
+          ],
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cerrar'))
+        ],
+      ),
+    );
   }
 
   @override
@@ -35,7 +156,13 @@ class _EventListScreenState extends State<EventListScreen> {
     return Scaffold(
       drawer: const AppDrawer(),
       appBar: AppBar(
-        title: const Text('Eventos Naturales - EONET'),
+        title: const Text('Eventos Naturales'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.filter_alt),
+            onPressed: _showFilterSheet,
+          ),
+        ],
       ),
       body: _loading
           ? const Center(child: CircularProgressIndicator())
@@ -54,18 +181,10 @@ class _EventListScreenState extends State<EventListScreen> {
                   itemBuilder: (context, index) {
                     final event = events[index];
                     return ListTile(
-                      leading: const Icon(Icons.public),
+                      leading: const Icon(Icons.warning),
                       title: Text(event.title),
-                      subtitle: Text('${event.category} • ${event.date.split("T")[0]}'),
-                      trailing: const Icon(Icons.chevron_right),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => EventDetailScreen(event: event),
-                          ),
-                        );
-                      },
+                      subtitle: Text('${event.category} • ${event.date.split('T')[0]}'),
+                      onTap: () => _goToDetails(event),
                     );
                   },
                 );
