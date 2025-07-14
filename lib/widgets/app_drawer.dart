@@ -12,26 +12,50 @@ class AppDrawer extends StatelessWidget {
   const AppDrawer({super.key});
 
   void _navigateTo(BuildContext context, Widget screen) {
-    Navigator.pop(context); // Cierra el drawer
+    Navigator.pop(context);
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (_) => screen),
     );
   }
-
+  
   @override
   Widget build(BuildContext context) {
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
-          const DrawerHeader(
-            decoration: BoxDecoration(
-              color: Color(0xFF1F2833),
+          DrawerHeader(
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('lib/assets/splash2.png'),
+                fit: BoxFit.cover,
+              ),
             ),
-            child: Text(
-              'Explora el Universo',
-              style: TextStyle(fontSize: 20, color: Colors.white),
+            child: Stack(
+              children: [
+                Container(
+                  color: Colors.black.withOpacity(0.4),
+                ),
+                const Align(
+                  alignment: Alignment.bottomLeft,
+                  child: Text(
+                    'Explora el Universo',
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      shadows: [
+                        Shadow(
+                          offset: Offset(1, 1),
+                          blurRadius: 4,
+                          color: Colors.black54,
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
           ListTile(

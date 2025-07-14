@@ -1,3 +1,5 @@
+import 'package:provider/provider.dart';
+import '../theme/theme_provider.dart';
 import 'package:flutter/material.dart';
 import '../core/media_service.dart';
 import '../models/media_item.dart';
@@ -53,6 +55,8 @@ class SearchMediaScreenState extends State<SearchMediaScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final compact = context.watch<ThemeProvider>().isCompactMode;
+
     return Scaffold(
       appBar: AppBar(title: const Text('Buscar Imágenes NASA')),
       drawer: const AppDrawer(),
@@ -75,6 +79,7 @@ class SearchMediaScreenState extends State<SearchMediaScreen> {
                   onPressed: () => _search(_controller.text),
                 ),
               ),
+              style: TextStyle(fontSize: compact ? 12 : 16),
             ),
             const SizedBox(height: 10),
             if (_loading)
@@ -91,12 +96,18 @@ class SearchMediaScreenState extends State<SearchMediaScreen> {
                       child: ListTile(
                         leading: Image.network(
                           item.imageUrl,
-                          width: 50,
-                          height: 50,
+                          width: compact ? 40 : 50,
+                          height: compact ? 40 : 50,
                           fit: BoxFit.cover,
                         ),
-                        title: Text(item.title),
-                        subtitle: Text(item.description),
+                        title: Text(
+                          item.title,
+                          style: TextStyle(fontSize: compact ? 14 : 18),
+                        ),
+                        subtitle: Text(
+                          item.description,
+                          style: TextStyle(fontSize: compact ? 12 : 14),
+                        ),
                       ),
                     );
                   },

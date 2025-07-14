@@ -1,3 +1,5 @@
+import 'package:provider/provider.dart';
+import '../theme/theme_provider.dart';
 import 'package:flutter/material.dart';
 import '../core/favorites_service.dart';
 import '../models/apod.dart';
@@ -29,6 +31,8 @@ class FavoritesScreenState extends State<FavoritesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final compact = context.watch<ThemeProvider>().isCompactMode;
+
     return Scaffold(
       appBar: AppBar(title: const Text('Favoritos')),
       drawer: const AppDrawer(),
@@ -43,7 +47,7 @@ class FavoritesScreenState extends State<FavoritesScreen> {
                     final apod = _favs[i];
                     return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 4.0),
-                      child: ApodCard(apod: apod),
+                      child: ApodCard(apod: apod, compactMode: compact),
                     );
                   },
                 ),

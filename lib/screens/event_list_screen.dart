@@ -1,6 +1,7 @@
+import 'package:provider/provider.dart';
+import '../theme/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../core/eonet_service.dart';
 import '../models/natural_event.dart';
 import '../widgets/app_drawer.dart';
@@ -128,24 +129,27 @@ class _EventListScreenState extends State<EventListScreen> {
     );
   }
 
-  void _goToDetails(NaturalEvent event) {
+  void _goToDetails(NaturalEvent event, bool compact) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(event.title),
+        title: Text(event.title, style: TextStyle(fontSize: compact ? 18 : 22)),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Categoría: ${event.category}'),
+            Text('Categoría: ${event.category}', style: TextStyle(fontSize: compact ? 14 : 16)),
             const SizedBox(height: 8),
-            Text('Fecha: ${event.date.split("T")[0]}'),
+            Text('Fecha: ${event.date.split("T")[0]}', style: TextStyle(fontSize: compact ? 14 : 16)),
             const SizedBox(height: 8),
-            Text(event.description ?? 'Sin descripción'),
+            Text(event.description ?? 'Sin descripción', style: TextStyle(fontSize: compact ? 14 : 16)),
           ],
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cerrar'))
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cerrar'),
+          )
         ],
       ),
     );
@@ -153,6 +157,8 @@ class _EventListScreenState extends State<EventListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final compact = context.watch<ThemeProvider>().isCompactMode;
+
     return Scaffold(
       drawer: const AppDrawer(),
       appBar: AppBar(
@@ -182,9 +188,12 @@ class _EventListScreenState extends State<EventListScreen> {
                     final event = events[index];
                     return ListTile(
                       leading: const Icon(Icons.warning),
-                      title: Text(event.title),
-                      subtitle: Text('${event.category} • ${event.date.split('T')[0]}'),
-                      onTap: () => _goToDetails(event),
+                      title: Text(event.title, style: TextStyle(fontSize: compact ? 14 : 16)),
+                      subtitle: Text(
+                        '${event.category} • ${event.date.split('T')[0]}',
+                        style: TextStyle(fontSize: compact ? 12 : 14),
+                      ),
+                      onTap: () => _goToDetails(event, compact),
                     );
                   },
                 );

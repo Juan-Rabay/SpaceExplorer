@@ -1,3 +1,5 @@
+import 'package:provider/provider.dart';
+import '../theme/theme_provider.dart';
 import 'package:flutter/material.dart';
 import '../core/rover_service.dart';
 import '../models/rover_photo.dart';
@@ -69,9 +71,11 @@ class _RoverPhotosScreenState extends State<RoverPhotosScreen> {
                   );
                   if (picked != null) setModalState(() => tempDate = picked);
                 },
-                child: Text(tempDate != null
-                    ? 'Fecha: ${tempDate!.toLocal().toString().split(' ')[0]}'
-                    : 'Seleccionar Fecha'),
+                child: Text(
+                  tempDate != null
+                      ? 'Fecha: ${tempDate!.toLocal().toString().split(' ')[0]}'
+                      : 'Seleccionar Fecha',
+                ),
               ),
               const SizedBox(height: 20),
               ElevatedButton(
@@ -94,6 +98,7 @@ class _RoverPhotosScreenState extends State<RoverPhotosScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final compact = context.watch<ThemeProvider>().isCompactMode;
     return Scaffold(
       drawer: const AppDrawer(),
       appBar: AppBar(
@@ -123,7 +128,7 @@ class _RoverPhotosScreenState extends State<RoverPhotosScreen> {
             itemBuilder: (context, index) {
               final photo = photos[index];
               return Card(
-                margin: const EdgeInsets.all(8),
+                margin: EdgeInsets.all(compact ? 6 : 12),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -131,7 +136,9 @@ class _RoverPhotosScreenState extends State<RoverPhotosScreen> {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
-                          'Rover: ${photo.roverName}, Cámara: ${photo.cameraName}, Fecha: ${photo.earthDate}'),
+                        'Rover: ${photo.roverName}, Cámara: ${photo.cameraName}, Fecha: ${photo.earthDate}',
+                        style: TextStyle(fontSize: compact ? 12 : 16),
+                      ),
                     )
                   ],
                 ),

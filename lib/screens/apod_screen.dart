@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
-
 import '../models/apod.dart';
 import '../widgets/apod_card.dart';
 import '../widgets/favorite_button.dart';
@@ -9,6 +9,7 @@ import '../core/api_client.dart';
 import '../core/connectivity_service.dart';
 import '../core/favorites_service.dart';
 import '../widgets/app_drawer.dart';
+import '../theme/theme_provider.dart';
 
 class ApodScreen extends StatefulWidget {
   const ApodScreen({super.key});
@@ -70,6 +71,8 @@ class _ApodScreenState extends State<ApodScreen> {
   @override
   Widget build(BuildContext context) {
     final title = _offline ? 'Imagen del Día (Sin conexión)' : 'Imagen del Día';
+    final compact = context.watch<ThemeProvider>().isCompactMode;
+
     return Scaffold(
       drawer: const AppDrawer(),
       appBar: AppBar(
@@ -94,7 +97,7 @@ class _ApodScreenState extends State<ApodScreen> {
           : _error != null
               ? Center(child: Text(_error!))
               : _apod != null
-                  ? ApodCard(apod: _apod!)
+                  ? ApodCard(apod: _apod!, compactMode: compact)
                   : const Center(child: Text('Sin datos.')),
     );
   }
