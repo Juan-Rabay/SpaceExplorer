@@ -48,7 +48,7 @@ git clone https://github.com/Juan-Rabay/SpaceExplorer.git
 cd spaceexplorer
 flutter pub get
 flutter run
-
+apk dir: build/app/outputs/flutter-apk/app-release.apk
 ## Autores
 
 - Felipe Pérez

@@ -1,0 +1,2 @@
+C:/Users/godga/Desktop/Aplicacion Movil/SpaceExplorer/android/app/.cxx/RelWithDebInfo/3h4h4d2i/armeabi-v7a/CMakeFiles/edit_cache.dir
+C:/Users/godga/Desktop/Aplicacion Movil/SpaceExplorer/android/app/.cxx/RelWithDebInfo/3h4h4d2i/armeabi-v7a/CMakeFiles/rebuild_cache.dir
